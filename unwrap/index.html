@@ -19,9 +19,6 @@ body, html { height:100%; }
 	</body>
 	<script>
 
-		document.body.style.backgroundImage = "url('" + atob(window.location.hash.substring(1)) + "')";
-		document.body.style.backgroundSize = 'contain';
-
 const canvas = document.querySelector('canvas');
 canvas.width = document.body.clientWidth; //document.width is obsolete
 canvas.height = document.body.clientHeight; //document.height is obsolete
@@ -30,6 +27,19 @@ const ctx = canvas.getContext('2d');
 ctx.fillStyle = 'rgba(255, 0, 0, 1.0)';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+	// Load image after we've drawn the wrapping
+		document.body.style.backgroundImage = "url('" + atob(window.location.hash.substring(1)) + "')";
+		document.body.style.backgroundSize = 'contain';
+
+var img = new Image();
+img.src = 'https://img5.goodfon.com/original/1919x1080/0/1b/prazdnik-novyi-god-fon-tekstura-christmas-pattern-background.jpg'
+img.onload = function() {
+  ctx.globalCompositeOperation = 'source-over';
+  var pattern = ctx.createPattern(img, 'repeat');
+  ctx.fillStyle = pattern;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+};
+
 function drawAt(x, y) {
     ctx.beginPath();
     ctx.arc(x, y, 50, 0, 360, false);
@@ -37,11 +47,10 @@ function drawAt(x, y) {
 }
 
 
-ctx.globalCompositeOperation = 'destination-out';
-
 ctx.fillStyle = "rgba(255, 255, 255, 1.0)";
 
 function unwrap(event) {
+    ctx.globalCompositeOperation = 'destination-out';
     event.preventDefault();
 
     const {pageX, pageY} = event.touches ? event.touches[0] : event;
